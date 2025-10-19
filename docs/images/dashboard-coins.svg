@@ -1,0 +1,101 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <rect width="1600" height="900" rx="30" fill="#f4f6fb"/>
+  <text x="120" y="120" fill="#1f274f" font-family="Inter, sans-serif" font-size="38" font-weight="700">核心币种概览</text>
+  <text x="120" y="165" fill="#6673a4" font-family="Inter, sans-serif" font-size="20">快速浏览主流资产的价格变化与健康度，点击卡片进入专业分析页面。</text>
+
+  <g transform="translate(120,200)">
+    <rect width="340" height="220" rx="26" fill="#ffffff" stroke="#d9dff4" stroke-width="2"/>
+    <circle cx="36" cy="40" r="18" fill="#eff2ff"/>
+    <text x="30" y="48" font-family="Inter, sans-serif" font-size="18" font-weight="700" fill="#5461b1">1</text>
+    <text x="80" y="50" fill="#1f274f" font-size="26" font-family="Inter, sans-serif" font-weight="700">Bitcoin</text>
+    <text x="80" y="82" fill="#7683b3" font-family="Inter, sans-serif" font-size="18">BTC</text>
+    <text x="36" y="132" fill="#1f274f" font-family="Inter, sans-serif" font-size="36" font-weight="700">$108,325.80</text>
+    <rect x="36" y="150" width="180" height="34" rx="17" fill="#e9f6ef"/>
+    <text x="60" y="172" fill="#34b37f" font-family="Inter, sans-serif" font-size="20" font-weight="600">24h 1.34%</text>
+    <text x="36" y="200" fill="#7a86ac" font-family="Inter, sans-serif" font-size="16">综合：43%    流动性：2%</text>
+  </g>
+
+  <g transform="translate(520,200)">
+    <rect width="340" height="220" rx="26" fill="#ffffff" stroke="#d9dff4" stroke-width="2"/>
+    <circle cx="36" cy="40" r="18" fill="#eff2ff"/>
+    <text x="30" y="48" font-family="Inter, sans-serif" font-size="18" font-weight="700" fill="#5461b1">2</text>
+    <text x="80" y="50" fill="#1f274f" font-size="26" font-family="Inter, sans-serif" font-weight="700">Ethereum</text>
+    <text x="80" y="82" fill="#7683b3" font-family="Inter, sans-serif" font-size="18">ETH</text>
+    <text x="36" y="132" fill="#1f274f" font-family="Inter, sans-serif" font-size="36" font-weight="700">$3,989.07</text>
+    <rect x="36" y="150" width="180" height="34" rx="17" fill="#e9f6ef"/>
+    <text x="60" y="172" fill="#34b37f" font-family="Inter, sans-serif" font-size="20" font-weight="600">24h 3.40%</text>
+    <text x="36" y="200" fill="#7a86ac" font-family="Inter, sans-serif" font-size="16">综合：44%    流动性：5%</text>
+  </g>
+
+  <g transform="translate(920,200)">
+    <rect width="340" height="220" rx="26" fill="#ffffff" stroke="#d9dff4" stroke-width="2"/>
+    <circle cx="36" cy="40" r="18" fill="#eff2ff"/>
+    <text x="30" y="48" font-family="Inter, sans-serif" font-size="18" font-weight="700" fill="#5461b1">3</text>
+    <text x="80" y="50" fill="#1f274f" font-size="26" font-family="Inter, sans-serif" font-weight="700">BNB</text>
+    <text x="80" y="82" fill="#7683b3" font-family="Inter, sans-serif" font-size="18">BNB</text>
+    <text x="36" y="132" fill="#1f274f" font-family="Inter, sans-serif" font-size="36" font-weight="700">$1,113.67</text>
+    <rect x="36" y="150" width="180" height="34" rx="17" fill="#e9f6ef"/>
+    <text x="60" y="172" fill="#34b37f" font-family="Inter, sans-serif" font-size="20" font-weight="600">24h 2.52%</text>
+    <text x="36" y="200" fill="#7a86ac" font-family="Inter, sans-serif" font-size="16">综合：41%    流动性：2%</text>
+  </g>
+
+  <g transform="translate(1320,200)">
+    <rect width="340" height="220" rx="26" fill="#ffffff" stroke="#d9dff4" stroke-width="2"/>
+    <circle cx="36" cy="40" r="18" fill="#eff2ff"/>
+    <text x="30" y="48" font-family="Inter, sans-serif" font-size="18" font-weight="700" fill="#5461b1">4</text>
+    <text x="80" y="50" fill="#1f274f" font-size="26" font-family="Inter, sans-serif" font-weight="700">Solana</text>
+    <text x="80" y="82" fill="#7683b3" font-family="Inter, sans-serif" font-size="18">SOL</text>
+    <text x="36" y="132" fill="#1f274f" font-family="Inter, sans-serif" font-size="36" font-weight="700">$190.85</text>
+    <rect x="36" y="150" width="180" height="34" rx="17" fill="#e9f6ef"/>
+    <text x="60" y="172" fill="#34b37f" font-family="Inter, sans-serif" font-size="20" font-weight="600">24h 3.38%</text>
+    <text x="36" y="200" fill="#7a86ac" font-family="Inter, sans-serif" font-size="16">综合：43%    流动性：4%</text>
+  </g>
+
+  <g transform="translate(120,460)">
+    <rect width="340" height="220" rx="26" fill="#ffffff" stroke="#d9dff4" stroke-width="2"/>
+    <circle cx="36" cy="40" r="18" fill="#eff2ff"/>
+    <text x="30" y="48" font-family="Inter, sans-serif" font-size="18" font-weight="700" fill="#5461b1">5</text>
+    <text x="80" y="50" fill="#1f274f" font-size="26" font-family="Inter, sans-serif" font-weight="700">TRON</text>
+    <text x="80" y="82" fill="#7683b3" font-family="Inter, sans-serif" font-size="18">TRX</text>
+    <text x="36" y="132" fill="#1f274f" font-family="Inter, sans-serif" font-size="36" font-weight="700">$0.32</text>
+    <rect x="36" y="150" width="180" height="34" rx="17" fill="#e9f6ef"/>
+    <text x="60" y="172" fill="#34b37f" font-family="Inter, sans-serif" font-size="20" font-weight="600">24h 2.21%</text>
+    <text x="36" y="200" fill="#7a86ac" font-family="Inter, sans-serif" font-size="16">综合：43%    流动性：1%</text>
+  </g>
+
+  <g transform="translate(520,460)">
+    <rect width="340" height="220" rx="26" fill="#ffffff" stroke="#d9dff4" stroke-width="2"/>
+    <circle cx="36" cy="40" r="18" fill="#eff2ff"/>
+    <text x="30" y="48" font-family="Inter, sans-serif" font-size="18" font-weight="700" fill="#5461b1">6</text>
+    <text x="80" y="50" fill="#1f274f" font-size="26" font-family="Inter, sans-serif" font-weight="700">Dogecoin</text>
+    <text x="80" y="82" fill="#7683b3" font-family="Inter, sans-serif" font-size="18">DOGE</text>
+    <text x="36" y="132" fill="#1f274f" font-family="Inter, sans-serif" font-size="36" font-weight="700">$0.20</text>
+    <rect x="36" y="150" width="180" height="34" rx="17" fill="#e9f6ef"/>
+    <text x="60" y="172" fill="#34b37f" font-family="Inter, sans-serif" font-size="20" font-weight="600">24h 5.74%</text>
+    <text x="36" y="200" fill="#7a86ac" font-family="Inter, sans-serif" font-size="16">综合：43%    流动性：6%</text>
+  </g>
+
+  <g transform="translate(920,460)">
+    <rect width="340" height="220" rx="26" fill="#ffffff" stroke="#d9dff4" stroke-width="2"/>
+    <circle cx="36" cy="40" r="18" fill="#eff2ff"/>
+    <text x="30" y="48" font-family="Inter, sans-serif" font-size="18" font-weight="700" fill="#5461b1">7</text>
+    <text x="80" y="50" fill="#1f274f" font-size="26" font-family="Inter, sans-serif" font-weight="700">Cardano</text>
+    <text x="80" y="82" fill="#7683b3" font-family="Inter, sans-serif" font-size="18">ADA</text>
+    <text x="36" y="132" fill="#1f274f" font-family="Inter, sans-serif" font-size="36" font-weight="700">$0.65</text>
+    <rect x="36" y="150" width="180" height="34" rx="17" fill="#e9f6ef"/>
+    <text x="60" y="172" fill="#34b37f" font-family="Inter, sans-serif" font-size="20" font-weight="600">24h 4.08%</text>
+    <text x="36" y="200" fill="#7a86ac" font-family="Inter, sans-serif" font-size="16">综合：42%    流动性：3%</text>
+  </g>
+
+  <g transform="translate(1320,460)">
+    <rect width="340" height="220" rx="26" fill="#ffffff" stroke="#d9dff4" stroke-width="2"/>
+    <circle cx="36" cy="40" r="18" fill="#eff2ff"/>
+    <text x="30" y="48" font-family="Inter, sans-serif" font-size="18" font-weight="700" fill="#5461b1">8</text>
+    <text x="80" y="50" fill="#1f274f" font-size="26" font-family="Inter, sans-serif" font-weight="700">Chainlink</text>
+    <text x="80" y="82" fill="#7683b3" font-family="Inter, sans-serif" font-size="18">LINK</text>
+    <text x="36" y="132" fill="#1f274f" font-family="Inter, sans-serif" font-size="36" font-weight="700">$17.43</text>
+    <rect x="36" y="150" width="180" height="34" rx="17" fill="#e9f6ef"/>
+    <text x="60" y="172" fill="#34b37f" font-family="Inter, sans-serif" font-size="20" font-weight="600">24h 4.23%</text>
+    <text x="36" y="200" fill="#7a86ac" font-family="Inter, sans-serif" font-size="16">综合：42%    流动性：5%</text>
+  </g>
+</svg>

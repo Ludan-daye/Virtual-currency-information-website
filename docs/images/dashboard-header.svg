@@ -1,0 +1,39 @@
+<svg width="1600" height="600" viewBox="0 0 1600 600" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <rect width="1600" height="600" rx="28" fill="#f4f6fb"/>
+  <rect x="120" y="60" width="1360" height="220" rx="30" fill="#ffffff" stroke="#d9dff4" stroke-width="2"/>
+  <text x="170" y="140" fill="#5f6ae0" font-family="Inter, sans-serif" font-size="20" font-weight="700" letter-spacing="0.18em">REALTIME INSIGHT</text>
+  <text x="170" y="205" fill="#0f1f55" font-family="Inter, sans-serif" font-size="64" font-weight="700">Crypto Health Intelligence</text>
+  <text x="170" y="260" fill="#6071a8" font-family="Inter, sans-serif" font-size="24">Track real-time market health, liquidity, momentum, and developer signals for the top cryptocurrencies.</text>
+  <rect x="1210" y="120" width="220" height="110" rx="24" fill="#f2f5ff" stroke="#d9dff4" stroke-width="2"/>
+  <text x="1240" y="170" fill="#8d9be0" font-family="Inter, sans-serif" font-size="18" letter-spacing="0.16em">QUOTE CURRENCY</text>
+  <text x="1240" y="208" fill="#324083" font-family="Inter, sans-serif" font-size="44" font-weight="700">USD</text>
+  <text x="1240" y="240" fill="#9aa6cc" font-family="Inter, sans-serif" font-size="16">Updated Oct 19, 2025 · 10:21 PM</text>
+  <g transform="translate(120,320)">
+    <rect width="420" height="200" rx="26" fill="#ffffff" stroke="#d9dff4" stroke-width="2"/>
+    <text x="36" y="70" fill="#1f274f" font-family="Inter, sans-serif" font-size="32" font-weight="700">$3.8T</text>
+    <text x="36" y="35" fill="#1f274f" font-family="Inter, sans-serif" font-size="22" font-weight="600">Global Market Cap</text>
+    <rect x="36" y="95" width="118" height="36" rx="18" fill="#e9f6ef"/>
+    <text x="54" y="118" fill="#34b37f" font-family="Inter, sans-serif" font-size="20" font-weight="600">+1.36%</text>
+    <text x="36" y="154" fill="#7a86ac" font-family="Inter, sans-serif" font-size="16">24h change</text>
+  </g>
+  <g transform="translate(580,320)">
+    <rect width="420" height="200" rx="26" fill="#ffffff" stroke="#d9dff4" stroke-width="2"/>
+    <text x="36" y="35" fill="#1f274f" font-family="Inter, sans-serif" font-size="22" font-weight="600">Total Volume</text>
+    <text x="36" y="70" fill="#1f274f" font-family="Inter, sans-serif" font-size="32" font-weight="700">$110B</text>
+    <rect x="36" y="110" width="320" height="10" rx="5" fill="#e5e9ff"/>
+    <rect x="36" y="110" width="220" height="10" rx="5" fill="#7087ff"/>
+    <text x="36" y="155" fill="#7a86ac" font-family="Inter, sans-serif" font-size="16">110B USD</text>
+    <rect x="320" y="22" width="80" height="32" rx="16" fill="#e8ecff"/>
+    <text x="335" y="45" fill="#6672b7" font-family="Inter, sans-serif" font-size="16">LIQUIDITY</text>
+  </g>
+  <g transform="translate(1040,320)">
+    <rect width="420" height="200" rx="26" fill="#ffffff" stroke="#d9dff4" stroke-width="2"/>
+    <text x="36" y="35" fill="#1f274f" font-family="Inter, sans-serif" font-size="22" font-weight="600">Average Health</text>
+    <rect x="320" y="22" width="90" height="32" rx="16" fill="#e8ecff"/>
+    <text x="334" y="45" fill="#6672b7" font-family="Inter, sans-serif" font-size="16">COMPOSITE</text>
+    <text x="36" y="70" fill="#1f274f" font-family="Inter, sans-serif" font-size="32" font-weight="700">43%</text>
+    <rect x="36" y="110" width="320" height="10" rx="5" fill="#d9f5e6"/>
+    <rect x="36" y="110" width="180" height="10" rx="5" fill="#56d6a0"/>
+    <text x="36" y="155" fill="#7a86ac" font-family="Inter, sans-serif" font-size="16">Dogecoin leads with 5.74% daily momentum</text>
+  </g>
+</svg>

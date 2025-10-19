@@ -1,0 +1,30 @@
+<svg width="1600" height="620" viewBox="0 0 1600 620" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <rect width="1600" height="620" rx="26" fill="#f4f6fb"/>
+  <rect x="120" y="100" width="1360" height="360" rx="24" fill="#ffffff" stroke="#d9dff4" stroke-width="2"/>
+  <text x="170" y="170" fill="#1f274f" font-family="Inter, sans-serif" font-size="30" font-weight="600">美国非农就业数据</text>
+  <text x="170" y="210" fill="#7a86ac" font-family="Inter, sans-serif" font-size="20">单位：千人（Actual vs Forecast）</text>
+  <g transform="translate(170,240)">
+    <rect width="1040" height="200" fill="#f5f7ff" rx="20"/>
+    <polyline points="0,150 150,120 300,140 450,110 600,100 750,130 900,160 1040,180" stroke="#4f6ef2" stroke-width="6" fill="url(#actualFill)"/>
+    <polyline points="0,160 150,150 300,145 450,140 600,135 750,130 900,120 1040,110" stroke="#78d3b4" stroke-width="6" fill="url(#forecastFill)"/>
+    <line x1="0" y1="180" x2="1040" y2="180" stroke="#dbe1f5" stroke-width="2" stroke-dasharray="6 6"/>
+    <text x="0" y="220" fill="#7a86ac" font-family="Inter, sans-serif" font-size="16">2024/06</text>
+    <text x="280" y="220" fill="#7a86ac" font-size="16" font-family="Inter, sans-serif">2024/07</text>
+    <text x="560" y="220" fill="#7a86ac" font-size="16" font-family="Inter, sans-serif">2024/08</text>
+    <text x="840" y="220" fill="#7a86ac" font-size="16" font-family="Inter, sans-serif">2024/09</text>
+    <text x="1040" y="220" fill="#7a86ac" font-size="16" font-family="Inter, sans-serif" text-anchor="end">2024/10</text>
+  </g>
+  <rect x="1240" y="120" width="200" height="100" rx="16" fill="#eef2ff"/>
+  <text x="1260" y="160" fill="#4f6ef2" font-family="Inter, sans-serif" font-size="20" font-weight="700">实际值</text>
+  <text x="1260" y="195" fill="#78d3b4" font-family="Inter, sans-serif" font-size="20" font-weight="700">预测值</text>
+  <defs>
+    <linearGradient id="actualFill" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#4f6ef2" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#4f6ef2" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="forecastFill" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#78d3b4" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#78d3b4" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+</svg>

@@ -1,0 +1,22 @@
+<svg width="960" height="540" viewBox="0 0 960 540" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <rect width="960" height="540" rx="24" fill="#F4F6FB"/>
+  <text x="60" y="80" fill="#1F274F" font-family="Inter, sans-serif" font-size="32" font-weight="700">Crypto Health Intelligence</text>
+  <text x="60" y="120" fill="#5A6690" font-family="Inter, sans-serif" font-size="20">Homepage Snapshot</text>
+
+  <rect x="60" y="160" width="380" height="130" rx="18" fill="#FFFFFF" stroke="#D7DEF4"/>
+  <text x="80" y="200" fill="#1F274F" font-size="18" font-family="Inter, sans-serif" font-weight="600">Global Market Cap</text>
+  <text x="80" y="235" fill="#4F6EF2" font-size="32" font-family="Inter, sans-serif" font-weight="700">$1.7T</text>
+  <text x="80" y="265" fill="#5A6690" font-size="14" font-family="Inter, sans-serif">24h Change +1.8%</text>
+
+  <rect x="460" y="160" width="380" height="130" rx="18" fill="#FFFFFF" stroke="#D7DEF4"/>
+  <text x="480" y="200" fill="#1F274F" font-size="18" font-family="Inter, sans-serif" font-weight="600">Average Health</text>
+  <text x="480" y="235" fill="#39B193" font-size="32" font-family="Inter, sans-serif" font-weight="700">72%</text>
+  <text x="480" y="265" fill="#5A6690" font-size="14" font-family="Inter, sans-serif">Momentum balanced across majors</text>
+
+  <rect x="60" y="320" width="780" height="150" rx="18" fill="#FFFFFF" stroke="#D7DEF4"/>
+  <text x="80" y="360" fill="#1F274F" font-size="18" font-family="Inter, sans-serif" font-weight="600">Market Insights</text>
+  <text x="80" y="395" fill="#5A6690" font-size="14" font-family="Inter, sans-serif">• 市值占比  • 趋势热搜  • 金融政策热搜</text>
+
+  <rect x="640" y="80" width="260" height="44" rx="12" fill="#4F6EF2"/>
+  <text x="670" y="108" fill="#FFFFFF" font-size="18" font-family="Inter, sans-serif">Sample Dashboard Preview</text>
+</svg>

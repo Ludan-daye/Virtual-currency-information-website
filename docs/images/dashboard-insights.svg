@@ -1,0 +1,59 @@
+<svg width="1600" height="720" viewBox="0 0 1600 720" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <rect width="1600" height="720" rx="28" fill="#f4f6fb"/>
+  <g transform="translate(100,120)">
+    <rect width="440" height="480" rx="26" fill="#ffffff" stroke="#d9dff4" stroke-width="2"/>
+    <text x="40" y="70" fill="#1f274f" font-family="Inter, sans-serif" font-size="24" font-weight="600">市值占比</text>
+    <text x="40" y="110" fill="#7a86ac" font-family="Inter, sans-serif" font-size="18">前六大资产权重</text>
+    <circle cx="220" cy="280" r="150" fill="#e5e9ff"/>
+    <path d="M220 130 A150 150 0 0 1 352 207 L220 280 Z" fill="#7187ff"/>
+    <path d="M352 207 A150 150 0 0 1 360 280 L220 280 Z" fill="#9d72ff"/>
+    <path d="M360 280 A150 150 0 0 1 280 400 L220 280 Z" fill="#4bd4c6"/>
+    <path d="M280 400 A150 150 0 0 1 160 410 L220 280 Z" fill="#ffb347"/>
+    <path d="M160 410 A150 150 0 0 1 120 300 L220 280 Z" fill="#ff6f91"/>
+    <path d="M120 300 A150 150 0 0 1 220 130 L220 280 Z" fill="#56cfe1"/>
+  </g>
+
+  <g transform="translate(580,120)">
+    <rect width="440" height="480" rx="26" fill="#ffffff" stroke="#d9dff4" stroke-width="2"/>
+    <text x="40" y="70" fill="#1f274f" font-family="Inter, sans-serif" font-size="24" font-weight="600">趋势热搜</text>
+    <text x="40" y="110" fill="#7a86ac" font-family="Inter, sans-serif" font-size="18">CoinGecko 指数</text>
+    <g transform="translate(40,150)">
+      <rect width="360" height="70" rx="20" fill="#f5f7ff" stroke="#dde4fb"/>
+      <text x="18" y="42" fill="#5a66aa" font-family="Inter, sans-serif" font-size="22" font-weight="700">1</text>
+      <text x="70" y="38" fill="#1f274f" font-family="Inter, sans-serif" font-size="22" font-weight="600">MLN</text>
+      <text x="70" y="60" fill="#7a86ac" font-family="Inter, sans-serif" font-size="16">melon</text>
+      <rect x="280" y="22" width="70" height="32" rx="16" fill="#ffe6c4"/>
+      <text x="296" y="44" fill="#b78a33" font-family="Inter, sans-serif" font-size="16">Score 0</text>
+    </g>
+    <g transform="translate(40,240)">
+      <rect width="360" height="70" rx="20" fill="#f5f7ff" stroke="#dde4fb"/>
+      <text x="18" y="42" fill="#5a66aa" font-size="22" font-weight="700" font-family="Inter, sans-serif">2</text>
+      <text x="70" y="38" fill="#1f274f" font-size="22" font-weight="600" font-family="Inter, sans-serif">TAO</text>
+      <text x="70" y="60" fill="#7a86ac" font-size="16" font-family="Inter, sans-serif">bittensor</text>
+      <rect x="280" y="22" width="70" height="32" rx="16" fill="#ffe6c4"/>
+      <text x="296" y="44" fill="#b78a33" font-size="16" font-family="Inter, sans-serif">Score 1</text>
+    </g>
+    <g transform="translate(40,330)">
+      <rect width="360" height="70" rx="20" fill="#f5f7ff" stroke="#dde4fb"/>
+      <text x="18" y="42" fill="#5a66aa" font-size="22" font-weight="700" font-family="Inter, sans-serif">3</text>
+      <text x="70" y="38" fill="#1f274f" font-size="22" font-weight="600" font-family="Inter, sans-serif">ASTER</text>
+      <text x="70" y="60" fill="#7a86ac" font-size="16" font-family="Inter, sans-serif">aster-2</text>
+      <rect x="280" y="22" width="70" height="32" rx="16" fill="#ffe6c4"/>
+      <text x="296" y="44" fill="#b78a33" font-size="16" font-family="Inter, sans-serif">Score 2</text>
+    </g>
+  </g>
+
+  <g transform="translate(1060,120)">
+    <rect width="440" height="480" rx="26" fill="#ffffff" stroke="#d9dff4" stroke-width="2"/>
+    <text x="40" y="70" fill="#1f274f" font-family="Inter, sans-serif" font-size="24" font-weight="600">金融政策热搜</text>
+    <text x="40" y="110" fill="#7a86ac" font-family="Inter, sans-serif" font-size="18">监管动向与潜在影响</text>
+    <rect x="40" y="150" width="360" height="280" rx="22" fill="#f8faff" stroke="#dde4fb"/>
+    <text x="66" y="210" fill="#1f274f" font-family="Inter, sans-serif" font-size="26" font-weight="600" style="width:300px">Wall Street deals with circular money machine risks as AI firms fund demand boom</text>
+    <rect x="340" y="168" width="60" height="100" rx="14" fill="#ffeccc"/>
+    <text x="350" y="220" fill="#c28e34" font-family="Inter, sans-serif" font-size="20" font-weight="700" writing-mode="tb" transform="translate(0,-20)">政策观察</text>
+    <text x="66" y="290" fill="#6b769d" font-family="Inter, sans-serif" font-size="17" style="width:300px">
+      Wall Street is facing a strange kind of storm, where the same companies behind the AI boom are also now funding the very demand that brings them profits...
+    </text>
+    <text x="66" y="348" fill="#9aa6cc" font-family="Inter, sans-serif" font-size="16">Cryptopolitan · Oct 19, 2025 · 10:11</text>
+  </g>
+</svg>
