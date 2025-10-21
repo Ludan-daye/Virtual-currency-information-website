@@ -144,3 +144,15 @@ npm run build && npm run preview
 5. 后台右上角可点击“立即发送”手动触发一次邮件推送，便于测试。
 
 > 默认证书：如未修改 `.env`，可使用 `admin123` 登录后台。
+
+## 预取行情数据（缓存）
+
+为了避免 CoinGecko 429 限流、提升前端访问速度，可以定期运行批量预取脚本，将行情数据写入 SQLite 缓存：
+
+```bash
+cd backend
+source .venv/bin/activate              # 如尚未激活虚拟环境
+python prefetch_data.py --coins bitcoin,ethereum,solana --timeframes 1D,7D,30D --sleep 2
+```
+
+脚本会按配置的间隔（默认 2 秒）调用 API，遵守每分钟 30 次的限制。缓存有效期默认为 7 天（可通过 `API_CACHE_MAX_AGE_SECONDS` 调整）。前端和邮件推送都会优先读取缓存，即使外部接口暂时限流也能正常展示数据。建议通过系统 `cron` 或任务调度器定时执行该脚本。
