@@ -13,6 +13,7 @@ import {
 } from "../hooks/useCryptoData";
 import { PolicyNewsPanel } from "../components/PolicyNewsPanel";
 import { NfpChart } from "../components/NfpChart";
+import { SubscriptionPanel } from "../components/SubscriptionPanel";
 import type { CoinMetrics } from "../types/crypto";
 
 export function Home() {
@@ -22,7 +23,6 @@ export function Home() {
   const overviewQuery = useMarketOverviewQuery(vsCurrency);
   const policyNewsQuery = usePolicyNewsQuery();
   const nfpQuery = useNfpQuery();
-  const coinsError = coinsQuery.error instanceof Error ? coinsQuery.error.message : undefined;
   const policyNewsError = policyNewsQuery.error instanceof Error ? policyNewsQuery.error.message : undefined;
   const nfpError = nfpQuery.error instanceof Error ? nfpQuery.error.message : undefined;
 
@@ -142,6 +142,8 @@ export function Home() {
           error={nfpQuery.isError ? nfpError : undefined}
         />
       </section>
+
+      <SubscriptionPanel />
     </div>
   );
 }

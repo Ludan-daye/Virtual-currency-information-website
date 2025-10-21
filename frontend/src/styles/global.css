@@ -438,6 +438,123 @@ button {
   height: 280px;
 }
 
+.subscription-card {
+  background: #ffffff;
+  border: 1px solid #dfe4f7;
+  border-radius: 18px;
+  padding: 1.6rem;
+  box-shadow: 0 12px 28px rgba(39, 61, 139, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.subscription-header h2 {
+  margin: 0;
+  color: #1f274f;
+  font-size: 1.35rem;
+}
+
+.subscription-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.subscription-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.subscription-input-group label {
+  font-size: 0.95rem;
+  color: #5a6690;
+  font-weight: 600;
+}
+
+.subscription-input-group input {
+  border-radius: 12px;
+  border: 1px solid #d4dcf5;
+  padding: 0.65rem 0.85rem;
+  font-size: 1rem;
+  font-family: inherit;
+  color: #1f274f;
+  background: #f8faff;
+}
+
+.subscription-input-group input:focus {
+  outline: none;
+  border-color: #7285ff;
+  box-shadow: 0 0 0 3px rgba(114, 133, 255, 0.2);
+}
+
+.subscription-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.subscription-actions button {
+  border: none;
+  border-radius: 999px;
+  padding: 0.65rem 1.4rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  background: linear-gradient(135deg, #4f6ef2, #7a8bff);
+  color: #fff;
+  box-shadow: 0 8px 16px rgba(79, 110, 242, 0.25);
+}
+
+.subscription-actions button.secondary {
+  background: #eef2ff;
+  color: #4352ac;
+  box-shadow: none;
+}
+
+.subscription-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.subscription-actions button:not(:disabled):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(79, 110, 242, 0.28);
+}
+
+.subscription-status {
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+}
+
+.subscription-status.success {
+  background: rgba(76, 201, 164, 0.16);
+  color: #2d745d;
+  border: 1px solid rgba(76, 201, 164, 0.35);
+}
+
+.subscription-status.error {
+  background: rgba(232, 118, 118, 0.16);
+  color: #8e3131;
+  border: 1px solid rgba(232, 118, 118, 0.35);
+}
+
+.subscription-status.info {
+  background: rgba(114, 133, 255, 0.12);
+  color: #2e3a86;
+  border: 1px solid rgba(114, 133, 255, 0.32);
+}
+
+.subscription-disclaimer {
+  margin: 0;
+  font-size: 0.8rem;
+}
+
 .forecast-summary {
   display: flex;
   flex-direction: column;
