@@ -40,6 +40,23 @@ def init_db() -> None:
             )
             """
         )
+        defaults = {
+            "EMAIL_ENABLED": "false",
+            "SMTP_HOST": settings.smtp_host or "",
+            "SMTP_PORT": str(settings.smtp_port),
+            "SMTP_USERNAME": settings.smtp_username or "",
+            "SMTP_PASSWORD": settings.smtp_password or "",
+            "SMTP_FROM_EMAIL": settings.smtp_from_email or "",
+        }
+        now = datetime.utcnow().isoformat() + "Z"
+        conn.executemany(
+            """
+            INSERT INTO settings (key, value, updated_at)
+            VALUES (?, ?, ?)
+            ON CONFLICT(key) DO NOTHING
+            """,
+            [(key, value, now) for key, value in defaults.items()],
+        )
     conn.close()
 
 

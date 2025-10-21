@@ -35,8 +35,8 @@ class Settings:
     smtp_password: str | None = os.getenv("SMTP_PASSWORD")
     smtp_from_email: str | None = os.getenv("SMTP_FROM_EMAIL")
     email_enabled: bool = os.getenv("EMAIL_ENABLED", "false").lower() == "true"
-    admin_password: str | None = os.getenv("ADMIN_PASSWORD")
-    admin_jwt_secret: str | None = os.getenv("ADMIN_JWT_SECRET")
+    admin_password: str | None = os.getenv("ADMIN_PASSWORD", "admin123")
+    admin_jwt_secret: str | None = os.getenv("ADMIN_JWT_SECRET", "crypto-health-intel-secret")
     supported_timeframes: Dict[str, int] = field(
         default_factory=lambda: {
             "1D": 1,
