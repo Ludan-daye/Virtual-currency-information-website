@@ -11,8 +11,14 @@ from app.services.metrics import (
 from app.services.policy_news import get_policy_news
 from app.services.macro import get_nfp_series
 from app.utils.errors import HttpError
-from app.db import upsert_user, get_user, list_users
+from app.db import upsert_user, get_user, list_users, upsert_config, get_config
 from app.config import settings
+from app.auth import (
+    authenticate_admin,
+    generate_admin_token,
+    require_admin,
+    AuthError,
+)
 
 api = Blueprint("api", __name__)
 
@@ -100,7 +106,8 @@ def create_subscription() -> tuple:
     return jsonify({"email": email, "coins": coins}), 200
 
 
-@api.route("/users/subscriptions", methods=["GET"])
+@api.route("/admin/subscribers", methods=["GET"])
+@require_admin
 def list_subscriptions() -> tuple:
     data = list_users()
     return jsonify(data)
@@ -112,3 +119,51 @@ def get_subscription(email: str) -> tuple:
     if not user:
         return jsonify({"message": "订阅不存在"}), 404
     return jsonify(user)
+CONFIG_KEYS = [
+    "EMAIL_ENABLED",
+    "SMTP_HOST",
+    "SMTP_PORT",
+    "SMTP_USERNAME",
+    "SMTP_PASSWORD",
+    "SMTP_FROM_EMAIL",
+]
+
+
+@api.route("/admin/login", methods=["POST"])
+def admin_login() -> tuple:
+    data = request.get_json(silent=True) or {}
+    password = str(data.get("password") or "")
+    try:
+        if not authenticate_admin(password):
+            return jsonify({"message": "密码错误"}), 401
+        token = generate_admin_token()
+        return jsonify({"token": token})
+    except AuthError as exc:
+        return jsonify({"message": str(exc)}), 400
+
+
+@api.route("/admin/config", methods=["GET"])
+@require_admin
+def admin_get_config() -> tuple:
+    data = get_config(CONFIG_KEYS)
+    response = {key: data.get(key) for key in CONFIG_KEYS}
+    return jsonify(response)
+
+
+@api.route("/admin/config", methods=["PUT"])
+@require_admin
+def admin_update_config() -> tuple:
+    payload = request.get_json(silent=True) or {}
+    entries: dict[str, str] = {}
+    for key in CONFIG_KEYS:
+        if key in payload:
+            value = payload[key]
+            if isinstance(value, bool):
+                entries[key] = "true" if value else "false"
+            else:
+                entries[key] = str(value)
+    if entries:
+        upsert_config(entries)
+    data = get_config(CONFIG_KEYS)
+    response = {key: data.get(key) for key in CONFIG_KEYS}
+    return jsonify(response)

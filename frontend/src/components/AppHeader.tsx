@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { formatDateTime } from "../utils/format";
 
 interface AppHeaderProps {
@@ -47,7 +48,14 @@ export function AppHeader({
           </p>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "0.75rem",
+            alignItems: "flex-end",
+          }}
+        >
           <label
             style={{
               fontSize: "0.8rem",
@@ -82,6 +90,9 @@ export function AppHeader({
           <span className="muted" style={{ fontSize: "0.8rem" }}>
             Updated {lastUpdated ? formatDateTime(lastUpdated) : "—"}
           </span>
+          <Link to="/admin" className="admin-link">
+            后台管理
+          </Link>
         </div>
       </div>
     </header>

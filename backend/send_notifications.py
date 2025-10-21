@@ -14,7 +14,7 @@ BASE_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(BASE_DIR))
 
 from app.config import settings  # noqa: E402
-from app.db import list_users  # noqa: E402
+from app.db import get_config, list_users  # noqa: E402
 from app.services.metrics import get_coins_with_metrics, get_coin_history  # noqa: E402
 from app.utils.errors import HttpError  # noqa: E402
 
@@ -70,26 +70,66 @@ def build_email_body(email: str, coins: List[str]) -> str:
     return "\n".join(lines)
 
 
-def send_email(recipient: str, subject: str, body: str) -> None:
-    if not settings.smtp_host:
+def load_email_settings() -> dict[str, object]:
+    overrides = get_config(
+        [
+            "EMAIL_ENABLED",
+            "SMTP_HOST",
+            "SMTP_PORT",
+            "SMTP_USERNAME",
+            "SMTP_PASSWORD",
+            "SMTP_FROM_EMAIL",
+        ]
+    )
+    email_enabled = overrides.get("EMAIL_ENABLED")
+    if isinstance(email_enabled, str):
+        email_enabled_bool = email_enabled.lower() == "true"
+    else:
+        email_enabled_bool = settings.email_enabled
+
+    smtp_port_value = overrides.get("SMTP_PORT")
+    try:
+        smtp_port = int(smtp_port_value) if smtp_port_value is not None else settings.smtp_port
+    except ValueError:
+        smtp_port = settings.smtp_port
+
+    return {
+        "email_enabled": email_enabled_bool,
+        "smtp_host": overrides.get("SMTP_HOST") or settings.smtp_host,
+        "smtp_port": smtp_port,
+        "smtp_username": overrides.get("SMTP_USERNAME") or settings.smtp_username,
+        "smtp_password": overrides.get("SMTP_PASSWORD") or settings.smtp_password,
+        "smtp_from_email": overrides.get("SMTP_FROM_EMAIL") or settings.smtp_from_email,
+    }
+
+
+def send_email(config: dict[str, object], recipient: str, subject: str, body: str) -> None:
+    smtp_host = config.get("smtp_host")
+    smtp_port = config.get("smtp_port") or 587
+    smtp_username = config.get("smtp_username")
+    smtp_password = config.get("smtp_password")
+    smtp_from_email = config.get("smtp_from_email") or smtp_username or "no-reply@example.com"
+
+    if not smtp_host:
         print(f"跳过发送到 {recipient}，未配置 SMTP_HOST")
         return
 
     msg = EmailMessage()
     msg["Subject"] = subject
-    msg["From"] = settings.smtp_from_email or settings.smtp_username or "no-reply@example.com"
+    msg["From"] = smtp_from_email
     msg["To"] = recipient
     msg.set_content(body)
 
-    with smtplib.SMTP(settings.smtp_host, settings.smtp_port) as server:
+    with smtplib.SMTP(smtp_host, smtp_port) as server:
         server.starttls()
-        if settings.smtp_username and settings.smtp_password:
-            server.login(settings.smtp_username, settings.smtp_password)
+        if smtp_username and smtp_password:
+            server.login(str(smtp_username), str(smtp_password))
         server.send_message(msg)
 
 
 def main() -> None:
-    if not settings.email_enabled:
+    email_config = load_email_settings()
+    if not email_config.get("email_enabled", False):
         print("EMAIL_ENABLED 未开启，跳过通知发送。")
         return
 
@@ -104,7 +144,7 @@ def main() -> None:
         if not coins:
             continue
         body = build_email_body(email, coins)
-        send_email(email, "加密资产每日行情提醒", body)
+        send_email(email_config, email, "加密资产每日行情提醒", body)
         print(f"已发送邮件给 {email}")
 
 

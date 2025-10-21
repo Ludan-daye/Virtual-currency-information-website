@@ -8,6 +8,7 @@
 - **可视化总览 + 专业详情页**：首页展示核心币种卡片和市场概览，点击任意币种即可进入金融视角的单币分析页面。
 - **多维图表**：包括趋势折线图、指标雷达图、指标对比柱状图、市场占比饼图及 7 天迷你走势图等。
 - **交互筛选与订阅**：支持切换计价货币、选择不同时间窗口，并可订阅邮箱定期接收行情摘要和预测。
+- **后台管理页**：管理员登录后可在线配置 SMTP、开启/关闭邮件推送并查看订阅用户列表。
 
 ## 目录结构
 ```
@@ -65,6 +66,8 @@ npm run build && npm start    # 生产构建并运行
 - `DATABASE_PATH`：订阅用户信息的 SQLite 存储路径（默认 `./data/app.sqlite3`）
 - `EMAIL_ENABLED`：是否启用邮件推送功能（`true/false`）
 - `SMTP_HOST`/`SMTP_PORT`/`SMTP_USERNAME`/`SMTP_PASSWORD`/`SMTP_FROM_EMAIL`：邮件推送所需的 SMTP 配置
+- `ADMIN_PASSWORD`：后台管理登录密码
+- `ADMIN_JWT_SECRET`：后台签发 JWT 的密钥
 
 ### API Endpoints
 | 方法 | 路径 | 描述 |
@@ -76,8 +79,10 @@ npm run build && npm start    # 生产构建并运行
 | GET | `/api/news/policies` | 金融/监管政策资讯（默认接入 CryptoCompare Regulation 新闻，可自定义数据源） |
 | GET | `/api/macro/nfp` | 美国非农就业数据（示例数据，支持替换为真实来源） |
 | POST | `/api/users/subscriptions` | 新增/更新邮箱订阅（参数：`email`、`coins` 数组） |
-| GET | `/api/users/subscriptions` | 列出所有订阅邮箱（开发调试用） |
 | GET | `/api/users/subscriptions/{email}` | 查询指定邮箱的订阅信息 |
+| POST | `/api/admin/login` | 管理员登录，参数 `password`，返回 Bearer Token |
+| GET/PUT | `/api/admin/config` | 获取/更新邮件推送等配置（需 Bearer Token） |
+| GET | `/api/admin/subscribers` | 查看所有订阅邮箱（需 Bearer Token） |
 
 ## 前端部署
 ```bash
@@ -128,3 +133,10 @@ npm run build && npm run preview
      -d '{"email": "user@example.com", "coins": ["bitcoin", "ethereum"]}'
    ```
 3. 运行 `python send_notifications.py`（位于 `backend/` 目录）即可向所有订阅者发送当日摘要，可结合系统 `cron` 定时执行。
+
+## 后台管理页面
+
+1. 在 `.env` 中配置 `ADMIN_PASSWORD` 与 `ADMIN_JWT_SECRET`。
+2. 访问前端 `http://127.0.0.1:15173/admin`，输入管理员密码登录。
+3. 登录成功后可在线修改 SMTP 配置、开启/关闭邮件推送、查看订阅用户列表。
+4. 所有请求均通过受保护的后台 API 下发或写入 SQLite，确保配置实时生效。

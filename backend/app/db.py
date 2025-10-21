@@ -31,6 +31,15 @@ def init_db() -> None:
             )
             """
         )
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS settings (
+                key TEXT PRIMARY KEY,
+                value TEXT NOT NULL,
+                updated_at TEXT NOT NULL
+            )
+            """
+        )
     conn.close()
 
 
@@ -81,3 +90,35 @@ def get_user(email: str) -> Dict[str, object] | None:
     data = dict(row)
     data["coins"] = data["coins"].split(",") if data.get("coins") else []
     return data
+
+
+def upsert_config(entries: Dict[str, str]) -> None:
+    if not entries:
+        return
+    now = datetime.utcnow().isoformat() + "Z"
+    conn = _get_connection()
+    with conn:
+        conn.executemany(
+            """
+            INSERT INTO settings (key, value, updated_at)
+            VALUES (?, ?, ?)
+            ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_at=excluded.updated_at
+            """,
+            [(key, value, now) for key, value in entries.items()],
+        )
+    conn.close()
+
+
+def get_config(keys: List[str] | None = None) -> Dict[str, str]:
+    conn = _get_connection()
+    with conn:
+        if keys:
+            placeholder = ",".join(["?"] * len(keys))
+            rows = conn.execute(
+                f"SELECT key, value FROM settings WHERE key IN ({placeholder})",
+                keys,
+            ).fetchall()
+        else:
+            rows = conn.execute("SELECT key, value FROM settings").fetchall()
+    conn.close()
+    return {row["key"]: row["value"] for row in rows}
