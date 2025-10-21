@@ -7,7 +7,7 @@
 - **健康评分模型**：综合波动率、流动性、动量、开发活跃度及社区影响力生成 0-100 的健康评分。
 - **可视化总览 + 专业详情页**：首页展示核心币种卡片和市场概览，点击任意币种即可进入金融视角的单币分析页面。
 - **多维图表**：包括趋势折线图、指标雷达图、指标对比柱状图、市场占比饼图及 7 天迷你走势图等。
-- **交互筛选**：支持切换计价货币、选择不同时间窗口、自定义关注币种并即时刷新页面。
+- **交互筛选与订阅**：支持切换计价货币、选择不同时间窗口，并可订阅邮箱定期接收行情摘要和预测。
 
 ## 目录结构
 ```
@@ -62,6 +62,9 @@ npm run build && npm start    # 生产构建并运行
 - `CACHE_TTL_SECONDS`：CoinGecko 响应的缓存时间
 - `MAX_COINS_PER_REQUEST`：单次请求最大币种数量
 - `POLICY_NEWS_ENDPOINT`（可选）：自定义金融政策资讯数据源，默认使用 CryptoCompare Regulation 新闻接口
+- `DATABASE_PATH`：订阅用户信息的 SQLite 存储路径（默认 `./data/app.sqlite3`）
+- `EMAIL_ENABLED`：是否启用邮件推送功能（`true/false`）
+- `SMTP_HOST`/`SMTP_PORT`/`SMTP_USERNAME`/`SMTP_PASSWORD`/`SMTP_FROM_EMAIL`：邮件推送所需的 SMTP 配置
 
 ### API Endpoints
 | 方法 | 路径 | 描述 |
@@ -71,6 +74,10 @@ npm run build && npm start    # 生产构建并运行
 | GET | `/api/coins/:id/history` | 指定币种历史数据，支持 `timeframe`（1D/7D/30D/90D/1Y）和 `vs_currency` |
 | GET | `/api/market/overview` | 市场总览：总市值、成交量、占比、热门搜索 |
 | GET | `/api/news/policies` | 金融/监管政策资讯（默认接入 CryptoCompare Regulation 新闻，可自定义数据源） |
+| GET | `/api/macro/nfp` | 美国非农就业数据（示例数据，支持替换为真实来源） |
+| POST | `/api/users/subscriptions` | 新增/更新邮箱订阅（参数：`email`、`coins` 数组） |
+| GET | `/api/users/subscriptions` | 列出所有订阅邮箱（开发调试用） |
+| GET | `/api/users/subscriptions/{email}` | 查询指定邮箱的订阅信息 |
 
 ## 前端部署
 ```bash
@@ -110,3 +117,14 @@ npm run build && npm run preview
 | 市场洞察 | 美国非农就业数据 |
 | --- | --- |
 | ![Market Insights](docs/images/dashboard-insights.svg) | ![US NFP](docs/images/dashboard-nfp.svg) |
+
+## 邮件订阅与推送
+
+1. 在 `backend/.env` 中配置 SMTP 相关变量，并将 `EMAIL_ENABLED` 设置为 `true`。
+2. 调用订阅接口（示例）：
+   ```bash
+   curl -X POST http://127.0.0.1:14000/api/users/subscriptions \
+     -H "Content-Type: application/json" \
+     -d '{"email": "user@example.com", "coins": ["bitcoin", "ethereum"]}'
+   ```
+3. 运行 `python send_notifications.py`（位于 `backend/` 目录）即可向所有订阅者发送当日摘要，可结合系统 `cron` 定时执行。

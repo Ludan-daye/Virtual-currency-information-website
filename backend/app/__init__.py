@@ -6,12 +6,15 @@ from flask_cors import CORS
 
 from app.config import settings
 from app.routes import api
+from app.db import init_db
 from app.utils.errors import HttpError
 
 
 def create_app() -> Flask:
     app = Flask(__name__)
     CORS(app, resources={r"*": {"origins": "*"}})
+
+    init_db()
 
     start_time = time.time()
 

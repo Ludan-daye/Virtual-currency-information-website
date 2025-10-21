@@ -11,7 +11,7 @@ load_dotenv()
 
 @dataclass
 class Settings:
-    port: int = int(os.getenv("PORT", "4000"))
+    port: int = int(os.getenv("PORT", "14000"))
     default_coins: List[str] = field(
         default_factory=lambda: os.getenv(
             "DEFAULT_COINS",
@@ -25,6 +25,16 @@ class Settings:
     coingecko_base_url: str = os.getenv(
         "COINGECKO_BASE_URL", "https://api.coingecko.com/api/v3"
     )
+    database_path: str = os.getenv(
+        "DATABASE_PATH",
+        os.path.join(os.path.dirname(__file__), "..", "data", "app.sqlite3"),
+    )
+    smtp_host: str | None = os.getenv("SMTP_HOST")
+    smtp_port: int = int(os.getenv("SMTP_PORT", "587"))
+    smtp_username: str | None = os.getenv("SMTP_USERNAME")
+    smtp_password: str | None = os.getenv("SMTP_PASSWORD")
+    smtp_from_email: str | None = os.getenv("SMTP_FROM_EMAIL")
+    email_enabled: bool = os.getenv("EMAIL_ENABLED", "false").lower() == "true"
     supported_timeframes: Dict[str, int] = field(
         default_factory=lambda: {
             "1D": 1,
