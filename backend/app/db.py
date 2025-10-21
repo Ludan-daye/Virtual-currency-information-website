@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import sqlite3
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -58,7 +58,7 @@ def init_db() -> None:
             "SMTP_PASSWORD": settings.smtp_password or "",
             "SMTP_FROM_EMAIL": settings.smtp_from_email or "",
         }
-        now = datetime.utcnow().isoformat() + "Z"
+        now = datetime.now(timezone.utc).isoformat()
         conn.executemany(
             """
             INSERT INTO settings (key, value, updated_at)
@@ -75,7 +75,7 @@ def upsert_user(email: str, coins: List[str]) -> None:
     coins = sorted(set([coin.strip().lower() for coin in coins if coin.strip()]))
     if not coins:
         raise ValueError("至少需要选择一个币种")
-    now = datetime.utcnow().isoformat() + "Z"
+    now = datetime.now(timezone.utc).isoformat()
     coins_str = ",".join(coins)
 
     conn = _get_connection()
@@ -162,8 +162,11 @@ def get_cached_json(cache_key: str, max_age_seconds: int) -> Any | None:
     if not row:
         return None
 
-    fetched_at = datetime.fromisoformat(row["fetched_at"].replace("Z", "+00:00"))
-    if datetime.utcnow() - fetched_at > timedelta(seconds=max_age_seconds):
+    fetched_raw = row["fetched_at"]
+    if fetched_raw.endswith("Z"):
+        fetched_raw = fetched_raw.replace("Z", "+00:00")
+    fetched_at = datetime.fromisoformat(fetched_raw)
+    if datetime.now(timezone.utc) - fetched_at > timedelta(seconds=max_age_seconds):
         delete_cached(cache_key)
         return None
 
@@ -175,7 +178,7 @@ def get_cached_json(cache_key: str, max_age_seconds: int) -> Any | None:
 
 def set_cached_json(cache_key: str, value: Any) -> None:
     payload = json.dumps(value)
-    now = datetime.utcnow().isoformat() + "Z"
+    now = datetime.now(timezone.utc).isoformat()
     conn = _get_connection()
     with conn:
         conn.execute(
@@ -197,11 +200,11 @@ def delete_cached(cache_key: str) -> None:
 
 
 def purge_expired_cache(max_age_seconds: int) -> None:
-    threshold = datetime.utcnow() - timedelta(seconds=max_age_seconds)
+    threshold = datetime.now(timezone.utc) - timedelta(seconds=max_age_seconds)
     conn = _get_connection()
     with conn:
         conn.execute(
             "DELETE FROM api_cache WHERE fetched_at < ?",
-            (threshold.isoformat() + "Z",),
+            (threshold.isoformat(),),
         )
     conn.close()
