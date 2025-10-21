@@ -103,7 +103,7 @@ def load_email_settings() -> dict[str, object]:
     }
 
 
-def send_email(config: dict[str, object], recipient: str, subject: str, body: str) -> None:
+def send_email(config: dict[str, object], recipient: str, subject: str, body: str) -> tuple[bool, str]:
     smtp_host = config.get("smtp_host")
     smtp_port = config.get("smtp_port") or 587
     smtp_username = config.get("smtp_username")
@@ -111,8 +111,7 @@ def send_email(config: dict[str, object], recipient: str, subject: str, body: st
     smtp_from_email = config.get("smtp_from_email") or smtp_username or "no-reply@example.com"
 
     if not smtp_host:
-        print(f"跳过发送到 {recipient}，未配置 SMTP_HOST")
-        return
+        return False, "未配置 SMTP_HOST"
 
     msg = EmailMessage()
     msg["Subject"] = subject
@@ -120,23 +119,36 @@ def send_email(config: dict[str, object], recipient: str, subject: str, body: st
     msg["To"] = recipient
     msg.set_content(body)
 
-    with smtplib.SMTP(smtp_host, smtp_port) as server:
-        server.starttls()
-        if smtp_username and smtp_password:
-            server.login(str(smtp_username), str(smtp_password))
-        server.send_message(msg)
+    try:
+        with smtplib.SMTP(smtp_host, smtp_port) as server:
+            server.starttls()
+            if smtp_username and smtp_password:
+                server.login(str(smtp_username), str(smtp_password))
+            server.send_message(msg)
+        return True, "已发送"
+    except Exception as exc:  # pragma: no cover
+        return False, str(exc)
 
 
-def main() -> None:
+def run_once(verbose: bool = True) -> dict[str, object]:
+    summary: dict[str, object] = {
+        "email_enabled": False,
+        "config": {},
+        "results": [],
+    }
     email_config = load_email_settings()
+    summary["config"] = email_config
     if not email_config.get("email_enabled", False):
-        print("EMAIL_ENABLED 未开启，跳过通知发送。")
-        return
+        if verbose:
+            print("EMAIL_ENABLED 未开启，跳过通知发送。")
+        return summary
+    summary["email_enabled"] = True
 
     users = list_users()
     if not users:
-        print("没有订阅用户，跳过通知发送。")
-        return
+        if verbose:
+            print("没有订阅用户，跳过通知发送。")
+        return summary
 
     for user in users:
         email = user["email"]
@@ -144,9 +156,26 @@ def main() -> None:
         if not coins:
             continue
         body = build_email_body(email, coins)
-        send_email(email_config, email, "加密资产每日行情提醒", body)
-        print(f"已发送邮件给 {email}")
+        success, message = send_email(
+            email_config,
+            email,
+            "加密资产每日行情提醒",
+            body,
+        )
+        summary["results"].append(
+            {
+                "email": email,
+                "coins": coins,
+                "success": success,
+                "message": message,
+            }
+        )
+        if verbose:
+            outcome = "成功" if success else "失败"
+            print(f"发送到 {email} {outcome}：{message}")
+
+    return summary
 
 
 if __name__ == "__main__":
-    main()
+    run_once(verbose=True)

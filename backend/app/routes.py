@@ -13,6 +13,7 @@ from app.services.macro import get_nfp_series
 from app.utils.errors import HttpError
 from app.db import upsert_user, get_user, list_users, upsert_config, get_config
 from app.config import settings
+from send_notifications import run_once as run_email_digest
 from app.auth import (
     authenticate_admin,
     generate_admin_token,
@@ -167,3 +168,10 @@ def admin_update_config() -> tuple:
     data = get_config(CONFIG_KEYS)
     response = {key: data.get(key) for key in CONFIG_KEYS}
     return jsonify(response)
+
+
+@api.route("/admin/notifications/send", methods=["POST"])
+@require_admin
+def admin_send_notifications() -> tuple:
+    summary = run_email_digest(verbose=False)
+    return jsonify(summary)

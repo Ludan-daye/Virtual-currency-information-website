@@ -28,6 +28,8 @@ export function AdminDashboard() {
   const [loadingConfig, setLoadingConfig] = useState(false);
   const [loadingSubscribers, setLoadingSubscribers] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [sendingNow, setSendingNow] = useState(false);
+  const [sendResults, setSendResults] = useState<any>(null);
   const navigate = useNavigate();
 
   const isAuthenticated = useMemo(() => Boolean(token), [token]);
@@ -157,6 +159,35 @@ export function AdminDashboard() {
     setConfig((prev) => ({ ...prev, [key]: value }));
   }
 
+  async function handleSendDigest() {
+    if (!token) {
+      return;
+    }
+    setSendingNow(true);
+    setStatusMessage("正在发送邮件，请稍候…");
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/admin/notifications/send`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload.message || "发送失败");
+      }
+      setSendResults(payload);
+      const successCount = (payload.results || []).filter((item: any) => item.success).length;
+      setStatusMessage(`手动推送完成：成功 ${successCount} 封。`);
+    } catch (error) {
+      setStatusMessage(
+        error instanceof Error ? error.message : "手动发送失败，请稍后重试"
+      );
+    } finally {
+      setSendingNow(false);
+    }
+  }
+
   if (!isAuthenticated) {
     return (
       <div className="page">
@@ -186,9 +217,14 @@ export function AdminDashboard() {
           <h1>后台配置中心</h1>
           <p className="muted">管理邮件推送、订阅用户，以及系统运行配置。</p>
         </div>
-        <button type="button" onClick={logout} className="secondary">
-          退出登录
-        </button>
+        <div className="admin-header-actions">
+          <button type="button" onClick={handleSendDigest} disabled={sendingNow}>
+            {sendingNow ? "发送中…" : "立即发送"}
+          </button>
+          <button type="button" onClick={logout} className="secondary">
+            退出登录
+          </button>
+        </div>
       </div>
 
       {statusMessage ? <div className="admin-status info">{statusMessage}</div> : null}
@@ -303,6 +339,33 @@ export function AdminDashboard() {
               </table>
             )}
           </div>
+          {sendResults ? (
+            <div className="send-summary">
+              <h3>最近一次执行</h3>
+              <p className="muted">
+                邮件推送状态：
+                {sendResults.email_enabled ? "已启用" : "已关闭"}
+              </p>
+              <table>
+                <thead>
+                  <tr>
+                    <th>邮箱</th>
+                    <th>状态</th>
+                    <th>说明</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(sendResults.results || []).map((item: any) => (
+                    <tr key={`${item.email}-${item.message}`}>
+                      <td>{item.email}</td>
+                      <td>{item.success ? "成功" : "失败"}</td>
+                      <td>{item.message}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : null}
         </div>
       </section>
     </div>
