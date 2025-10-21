@@ -146,14 +146,29 @@ def get_coins_with_metrics(
             f"A maximum of {settings.max_coins_per_request} coins can be requested at once",
         )
 
-    market_data = fetch_market_data(ids, vs_currency)
+    try:
+        market_data = fetch_market_data(ids, vs_currency)
+    except HttpError as exc:
+        cached = get_cached_json(cache_key, settings.api_cache_max_age_seconds, allow_expired=True)
+        if cached is not None:
+            return cached
+        raise exc
     details_list: List[Dict[str, Any] | None] = []
     if include_details:
         for coin in market_data:
-            try:
-                details_list.append(fetch_coin_details(coin["id"]))
-            except HttpError:
-                details_list.append(None)
+            detail_key = f"coin-detail:{coin['id']}"
+            detail = get_cached_json(detail_key, settings.api_cache_max_age_seconds)
+            if detail is None:
+                try:
+                    detail = fetch_coin_details(coin["id"])
+                    set_cached_json(detail_key, detail)
+                except HttpError as exc:
+                    stale = get_cached_json(detail_key, settings.api_cache_max_age_seconds, allow_expired=True)
+                    if stale is not None:
+                        detail = stale
+                    else:
+                        detail = None
+            details_list.append(detail)
     else:
         details_list = [None] * len(market_data)
 
@@ -182,7 +197,13 @@ def get_coin_history(coin_id: str, timeframe_key: str, vs_currency: str | None =
     if cached:
         return cached
 
-    data = fetch_market_chart(coin_id, vs_currency, days)
+    try:
+        data = fetch_market_chart(coin_id, vs_currency, days)
+    except HttpError as exc:
+        cached = get_cached_json(cache_key, settings.api_cache_max_age_seconds, allow_expired=True)
+        if cached is not None:
+            return cached
+        raise exc
 
     prices = data.get("prices") or []
     market_caps = data.get("market_caps") or []
@@ -218,7 +239,13 @@ def get_market_overview(vs_currency: str | None = None) -> Dict[str, Any]:
     if cached:
         return cached
 
-    global_data, trending_data = fetch_global_data(), fetch_trending()
+    try:
+        global_data, trending_data = fetch_global_data(), fetch_trending()
+    except HttpError as exc:
+        cached = get_cached_json(cache_key, settings.api_cache_max_age_seconds, allow_expired=True)
+        if cached is not None:
+            return cached
+        raise exc
 
     total_market_cap = (global_data.get("data", {}).get("total_market_cap") or {}).get(vs_currency, 0)
     total_volume = (global_data.get("data", {}).get("total_volume") or {}).get(vs_currency, 0)

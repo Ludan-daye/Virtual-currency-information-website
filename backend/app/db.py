@@ -151,7 +151,7 @@ def get_config(keys: List[str] | None = None) -> Dict[str, str]:
     return {row["key"]: row["value"] for row in rows}
 
 
-def get_cached_json(cache_key: str, max_age_seconds: int) -> Any | None:
+def get_cached_json(cache_key: str, max_age_seconds: int, allow_expired: bool = False) -> Any | None:
     conn = _get_connection()
     with conn:
         row = conn.execute(
@@ -167,6 +167,11 @@ def get_cached_json(cache_key: str, max_age_seconds: int) -> Any | None:
         fetched_raw = fetched_raw.replace("Z", "+00:00")
     fetched_at = datetime.fromisoformat(fetched_raw)
     if datetime.now(timezone.utc) - fetched_at > timedelta(seconds=max_age_seconds):
+        if allow_expired:
+            try:
+                return json.loads(row["data"])
+            except json.JSONDecodeError:
+                return None
         delete_cached(cache_key)
         return None
 
