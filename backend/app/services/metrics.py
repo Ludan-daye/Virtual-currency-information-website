@@ -11,6 +11,7 @@ from app.services.coingecko import (
     fetch_trending,
 )
 from app.utils.errors import HttpError
+from app.db import get_cached_json, set_cached_json
 
 
 def clamp(value: float, min_value: float, max_value: float) -> float:
@@ -127,6 +128,15 @@ def get_coins_with_metrics(
 ) -> List[Dict[str, Any]]:
     ids = ids or settings.default_coins
     vs_currency = (vs_currency or settings.default_vs_currency).lower()
+    cache_key = "coins:{0}:{1}:{2}".format(
+        vs_currency,
+        ",".join(sorted(ids)),
+        int(include_details),
+    )
+
+    cached = get_cached_json(cache_key, settings.api_cache_max_age_seconds)
+    if cached:
+        return cached
 
     if not ids:
         raise HttpError(400, "At least one coin id is required")
@@ -147,13 +157,15 @@ def get_coins_with_metrics(
     else:
         details_list = [None] * len(market_data)
 
-    return [
+    result = [
         {
             "coin": coin,
             "metrics": compute_metrics(coin, details_list[idx]),
         }
         for idx, coin in enumerate(market_data)
     ]
+    set_cached_json(cache_key, result)
+    return result
 
 
 def get_coin_history(coin_id: str, timeframe_key: str, vs_currency: str | None = None) -> List[Dict[str, Any]]:
@@ -165,6 +177,11 @@ def get_coin_history(coin_id: str, timeframe_key: str, vs_currency: str | None =
         )
 
     days = settings.supported_timeframes[timeframe_key]
+    cache_key = f"history:{coin_id}:{vs_currency}:{timeframe_key}"
+    cached = get_cached_json(cache_key, settings.api_cache_max_age_seconds)
+    if cached:
+        return cached
+
     data = fetch_market_chart(coin_id, vs_currency, days)
 
     prices = data.get("prices") or []
@@ -190,11 +207,17 @@ def get_coin_history(coin_id: str, timeframe_key: str, vs_currency: str | None =
             }
         )
 
+    set_cached_json(cache_key, history)
     return history
 
 
 def get_market_overview(vs_currency: str | None = None) -> Dict[str, Any]:
     vs_currency = (vs_currency or settings.default_vs_currency).lower()
+    cache_key = f"market-overview:{vs_currency}"
+    cached = get_cached_json(cache_key, settings.api_cache_max_age_seconds)
+    if cached:
+        return cached
+
     global_data, trending_data = fetch_global_data(), fetch_trending()
 
     total_market_cap = (global_data.get("data", {}).get("total_market_cap") or {}).get(vs_currency, 0)
@@ -213,10 +236,12 @@ def get_market_overview(vs_currency: str | None = None) -> Dict[str, Any]:
             }
         )
 
-    return {
+    result = {
         "totalMarketCap": total_market_cap,
         "totalVolume": total_volume,
         "marketCapChange24h": market_cap_change,
         "dominance": dominance,
         "trending": trending_coins,
     }
+    set_cached_json(cache_key, result)
+    return result

@@ -20,6 +20,7 @@ class Settings:
     )
     default_vs_currency: str = os.getenv("DEFAULT_VS_CURRENCY", "usd")
     cache_ttl_seconds: int = int(os.getenv("CACHE_TTL_SECONDS", "60"))
+    api_cache_max_age_seconds: int = int(os.getenv("API_CACHE_MAX_AGE_SECONDS", str(7 * 24 * 3600)))
     max_coins_per_request: int = int(os.getenv("MAX_COINS_PER_REQUEST", "12"))
     request_timeout_seconds: int = int(os.getenv("REQUEST_TIMEOUT_SECONDS", "12"))
     coingecko_base_url: str = os.getenv(

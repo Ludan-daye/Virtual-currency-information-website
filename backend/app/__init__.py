@@ -6,7 +6,7 @@ from flask_cors import CORS
 
 from app.config import settings
 from app.routes import api
-from app.db import init_db
+from app.db import init_db, purge_expired_cache
 from app.utils.errors import HttpError
 
 
@@ -15,6 +15,7 @@ def create_app() -> Flask:
     CORS(app, resources={r"*": {"origins": "*"}})
 
     init_db()
+    purge_expired_cache(settings.api_cache_max_age_seconds)
 
     start_time = time.time()
 

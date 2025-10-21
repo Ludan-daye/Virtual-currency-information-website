@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import time
 from typing import Any, Dict, List
 
 import requests
@@ -11,21 +12,31 @@ from app.utils.errors import HttpError
 
 def _request(endpoint: str, params: Dict[str, Any] | None = None) -> Any:
     url = f"{settings.coingecko_base_url}{endpoint}"
-    try:
-        response = requests.get(
-            url,
-            params=params,
-            timeout=settings.request_timeout_seconds,
-            headers={"Accept": "application/json"},
-        )
-        response.raise_for_status()
-        return response.json()
-    except requests.HTTPError as exc:
-        status = exc.response.status_code if exc.response is not None else 500
-        message = exc.response.reason if exc.response is not None else str(exc)
-        raise HttpError(status, f"CoinGecko API error ({status}): {message}") from exc
-    except requests.RequestException as exc:  # network or timeout
-        raise HttpError(502, f"CoinGecko request failed: {exc}") from exc
+    backoff_seconds = [0, 1, 3]
+
+    for attempt, delay in enumerate(backoff_seconds, start=1):
+        if delay:
+            time.sleep(delay)
+        try:
+            response = requests.get(
+                url,
+                params=params,
+                timeout=settings.request_timeout_seconds,
+                headers={"Accept": "application/json"},
+            )
+            response.raise_for_status()
+            return response.json()
+        except requests.HTTPError as exc:
+            status = exc.response.status_code if exc.response is not None else 500
+            if status == 429 and attempt < len(backoff_seconds):
+                # Hit API rate limit, retry after backoff
+                continue
+            message = exc.response.reason if exc.response is not None else str(exc)
+            raise HttpError(status, f"CoinGecko API error ({status}): {message}") from exc
+        except requests.RequestException as exc:  # network or timeout
+            if attempt < len(backoff_seconds):
+                continue
+            raise HttpError(502, f"CoinGecko request failed: {exc}") from exc
 
 
 def fetch_market_data(ids: List[str], vs_currency: str, include_sparkline: bool = True) -> Any:

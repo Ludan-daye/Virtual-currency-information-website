@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import sqlite3
-from datetime import datetime
+import json
+from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List
+from typing import Any, Dict, List
 
 from app.config import settings
 
@@ -37,6 +38,15 @@ def init_db() -> None:
                 key TEXT PRIMARY KEY,
                 value TEXT NOT NULL,
                 updated_at TEXT NOT NULL
+            )
+            """
+        )
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS api_cache (
+                cache_key TEXT PRIMARY KEY,
+                data TEXT NOT NULL,
+                fetched_at TEXT NOT NULL
             )
             """
         )
@@ -139,3 +149,59 @@ def get_config(keys: List[str] | None = None) -> Dict[str, str]:
             rows = conn.execute("SELECT key, value FROM settings").fetchall()
     conn.close()
     return {row["key"]: row["value"] for row in rows}
+
+
+def get_cached_json(cache_key: str, max_age_seconds: int) -> Any | None:
+    conn = _get_connection()
+    with conn:
+        row = conn.execute(
+            "SELECT data, fetched_at FROM api_cache WHERE cache_key = ?",
+            (cache_key,),
+        ).fetchone()
+    conn.close()
+    if not row:
+        return None
+
+    fetched_at = datetime.fromisoformat(row["fetched_at"].replace("Z", "+00:00"))
+    if datetime.utcnow() - fetched_at > timedelta(seconds=max_age_seconds):
+        delete_cached(cache_key)
+        return None
+
+    try:
+        return json.loads(row["data"])
+    except json.JSONDecodeError:
+        return None
+
+
+def set_cached_json(cache_key: str, value: Any) -> None:
+    payload = json.dumps(value)
+    now = datetime.utcnow().isoformat() + "Z"
+    conn = _get_connection()
+    with conn:
+        conn.execute(
+            """
+            INSERT INTO api_cache (cache_key, data, fetched_at)
+            VALUES (?, ?, ?)
+            ON CONFLICT(cache_key) DO UPDATE SET data=excluded.data, fetched_at=excluded.fetched_at
+            """,
+            (cache_key, payload, now),
+        )
+    conn.close()
+
+
+def delete_cached(cache_key: str) -> None:
+    conn = _get_connection()
+    with conn:
+        conn.execute("DELETE FROM api_cache WHERE cache_key = ?", (cache_key,))
+    conn.close()
+
+
+def purge_expired_cache(max_age_seconds: int) -> None:
+    threshold = datetime.utcnow() - timedelta(seconds=max_age_seconds)
+    conn = _get_connection()
+    with conn:
+        conn.execute(
+            "DELETE FROM api_cache WHERE fetched_at < ?",
+            (threshold.isoformat() + "Z",),
+        )
+    conn.close()
