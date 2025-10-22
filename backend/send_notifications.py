@@ -16,6 +16,7 @@ sys.path.insert(0, str(BASE_DIR))
 from app.config import settings  # noqa: E402
 from app.db import get_config, list_users  # noqa: E402
 from app.services.metrics import get_coins_with_metrics, get_coin_history  # noqa: E402
+from app.services.policy_news import get_policy_news  # noqa: E402
 from app.utils.errors import HttpError  # noqa: E402
 
 load_dotenv(BASE_DIR / ".env")
@@ -66,8 +67,101 @@ def build_email_body(email: str, coins: List[str]) -> str:
             ]
         )
 
-    lines.append("此邮件由 Crypto Health Intelligence 自动发送，感谢您的关注！")
+    try:
+        policy_news = get_policy_news()
+    except Exception:
+        policy_news = []
+
+    lines.extend(
+        [
+            "",
+            "金融政策热搜：",
+        ]
+    )
+    if policy_news:
+        lines.extend(render_policy_news_digest(policy_news))
+    else:
+        lines.append("- 暂无最新政策更新，可稍后再查看。")
+
+    lines.extend(
+        [
+            "",
+            "此邮件由 Crypto Health Intelligence 自动发送，感谢您的关注！",
+        ]
+    )
+
     return "\n".join(lines)
+
+
+def render_policy_news_digest(policy_news: List[dict[str, object]]) -> List[str]:
+    sections = {
+        "全球动荡": [],
+        "世界局势": [],
+        "能源市场": [],
+        "市场稳定度": [],
+        "政策动向": [],
+        "政策观察": [],
+    }
+    extra_sections: dict[str, List[dict[str, object]]] = {}
+
+    for item in policy_news:
+        themes = item.get("themes") or []
+        themes_list = [str(theme).strip() for theme in themes if isinstance(theme, str) and str(theme).strip()]
+        target_sections: List[str] = []
+        for theme in themes_list:
+            if theme in sections:
+                target_sections.append(theme)
+            else:
+                target_sections.append(theme)
+                extra_sections.setdefault(theme, []).append(item)
+        if not target_sections:
+            target_sections.append("政策观察")
+
+        for theme in target_sections[:1]:
+            sections.setdefault(theme, []).append(item)
+
+    digest_lines: List[str] = []
+
+    def append_section(header: str, items: List[dict[str, object]]):
+        if not items:
+            return
+        digest_lines.append("")
+        digest_lines.append(f"{header}:")
+        for entry in items[:3]:
+            digest_lines.extend(render_policy_item_line(entry))
+
+    append_section("全球动荡观察", sections.get("全球动荡", []))
+    append_section("世界局势脉络", sections.get("世界局势", []))
+    append_section("能源市场焦点", sections.get("能源市场", []))
+    append_section("市场稳定度速览", sections.get("市场稳定度", []))
+    append_section("政策动向追踪", sections.get("政策动向", []))
+    append_section("政策观察", sections.get("政策观察", []))
+
+    for theme, items in extra_sections.items():
+        append_section(theme, items)
+
+    return digest_lines or ["- 暂无最新政策更新，可稍后再查看。"]
+
+
+def render_policy_item_line(item: dict[str, object]) -> List[str]:
+    title = str(item.get("title") or "").strip()
+    if not title:
+        return []
+    url = str(item.get("url") or "").strip()
+    summary = str(item.get("summary") or "").strip()
+    region = str(item.get("region") or "Global")
+    impact = str(item.get("impact") or "")
+    themes = item.get("themes") or []
+    theme_list = [str(theme) for theme in themes if isinstance(theme, str) and theme.strip()]
+    meta_parts = [part for part in [impact, *theme_list[:2]] if part]
+    meta_suffix = f"｜{'｜'.join(meta_parts)}" if meta_parts else ""
+
+    lines = [f"- [{region}] {title} {meta_suffix}".rstrip()]
+    if summary:
+        lines.append(f"  摘要：{summary}")
+    if url:
+        lines.append(f"  链接：{url}")
+    return lines
 
 
 def load_email_settings() -> dict[str, object]:

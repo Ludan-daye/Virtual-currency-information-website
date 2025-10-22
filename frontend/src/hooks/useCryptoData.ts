@@ -30,8 +30,8 @@ export function usePolicyNewsQuery() {
   return useQuery({
     queryKey: ["policy-news"],
     queryFn: fetchPolicyNews,
-    staleTime: 30 * 60_000,
-    refetchInterval: 30 * 60_000,
+    staleTime: 5 * 60_000,
+    refetchInterval: 5 * 60_000,
   });
 }
 

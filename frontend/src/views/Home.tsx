@@ -119,18 +119,25 @@ export function Home() {
               />
             </div>
           </div>
-          <div className="insight-block">
-            <div className="insight-block-header">
-              <h3>金融政策热搜</h3>
-              <span className="muted">监管动向与潜在影响</span>
-            </div>
-            <div className="insight-block-body scrollable">
-              <PolicyNewsPanel
-                items={policyNewsQuery.data}
-                loading={policyNewsQuery.isLoading}
-                error={policyNewsQuery.isError ? policyNewsError : undefined}
-              />
-            </div>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="section-header">
+          <h2>全球局势与政策动态</h2>
+          <p>聚焦政治时政、金融监管与市场稳定度的重点资讯。</p>
+        </div>
+        <div className="card policy-news-card">
+          <div className="policy-news-card-header">
+            <h3>金融政策热搜</h3>
+            <span className="muted">聚合全球动荡、战争风险、能源供需与监管动向。</span>
+          </div>
+          <div className="policy-news-card-body">
+            <PolicyNewsPanel
+              items={policyNewsQuery.data}
+              loading={policyNewsQuery.isLoading}
+              error={policyNewsQuery.isError ? policyNewsError : undefined}
+            />
           </div>
         </div>
       </section>

@@ -6,4 +6,5 @@ export interface PolicyNewsItem {
   region: string;
   impact: string;
   publishedAt: string;
+  themes?: string[];
 }

@@ -1,158 +1,195 @@
-# Crypto Health Intelligence Dashboard
+# Crypto Health Intelligence
 
-可视化虚拟货币的关键金融指标、健康评分以及趋势走向的全栈站点。后端基于 Node.js + Express 聚合 CoinGecko 数据并计算多维健康指标，前端采用 React + Vite + Recharts 构建互动式分析界面，支持多种维度的实时刷新。
+Crypto Health Intelligence 是一个一体化的虚拟资产市场情报平台，整合币种基础数据、健康指标、政策新闻以及宏观就业数据，并支持按主题聚合的邮件推送。项目包含 Flask 后端、React + Vite 前端，以及一个可复用的启动脚本。
 
-## 功能总览
-- **实时市场聚合**：获取主流币种的价格、成交量、市值、占比等信息，并按分钟级缓存减轻 API 压力。
-- **健康评分模型**：综合波动率、流动性、动量、开发活跃度及社区影响力生成 0-100 的健康评分。
-- **可视化总览 + 专业详情页**：首页展示核心币种卡片和市场概览，点击任意币种即可进入金融视角的单币分析页面。
-- **多维图表**：包括趋势折线图、指标雷达图、指标对比柱状图、市场占比饼图及 7 天迷你走势图等。
-- **交互筛选与订阅**：支持切换计价货币、选择不同时间窗口，并可订阅邮箱定期接收行情摘要和预测。
-- **后台管理页**：管理员登录后可在线配置 SMTP、开启/关闭邮件推送并查看订阅用户列表。
-- **本地数据缓存**：行情、历史与市场概览在本地数据库缓存 7 天，减少 CoinGecko 请求、提升前端加载速度，邮件发送也直接读取缓存。
+## 功能亮点
+
+- **核心币种监控**：追踪主流币的价格、24h 涨跌、健康分、流动性分与动量分，并支持多种计价货币。
+- **市场概览**：展示总市值、占比、资金流向、趋势热搜以及 NFP（美国非农就业）时间序列。
+- **政策资讯中心**：按“全球动荡”“世界局势”“能源市场”“市场稳定度”“政策动向”“政策观察”等主题自动分段，来自 CryptoCompare 的实时新闻，在缺少某一主题新闻时会智能补齐。
+- **邮件订阅系统**：用户可订阅感兴趣的币种；每日推送包含币种简报、健康度、预测变化以及上述各主题的政策新闻，支持链接直达原文。
+- **后台配置**：管理员可登录配置 SMTP、查看订阅者、手动触发邮件推送。
 
 ## 目录结构
+
 ```
-.
-├── backend      # TypeScript + Express API 服务
-├── frontend     # Vite + React 可视化前端
-└── README.md    # 项目说明
+backend/        Flask 应用、服务逻辑与任务脚本
+frontend/       React/Vite 前端
+start.sh        本地一键启动脚本
+docs/           原型图与设计素材
 ```
 
-## 环境要求
-- Node.js ≥ 20.19（Vite 官方要求，建议使用 `nvm use 20`）
-- npm ≥ 10
+## 快速开始（开发环境）
 
-> 说明：在 Node 18 下也能编译运行，但会有 engine warning。推荐升级以保证长期兼容性。
+### 先决条件
 
-## 快速一键启动
+- Python 3.10+
+- Node.js 20（推荐配合 nvm，`start.sh` 会尝试自动切换）
+- `pip`, `npm`
+
+### 一键启动
 
 ```bash
 ./start.sh
 ```
 
-脚本会自动：
-- 创建/更新后端虚拟环境并安装依赖；
-- 以指定端口（默认 14000）启动 Flask API；
-- 安装前端依赖并运行 Vite 开发服务器（默认 5173）；
-- 输出访问地址，`Ctrl+C` 可同时关闭前后端。
+脚本会在 `backend/.venv` 创建虚拟环境、安装后端依赖，拉取前端依赖，并分别启动 Flask API（默认 14000 端口）和前端开发服务器（默认 15173 端口）。如需覆盖端口或命令，可在执行前设置环境变量：
 
-可通过环境变量定制：
-
-| 变量 | 说明 | 默认 |
-| ---- | ---- | ---- |
-| `BACKEND_PORT` | 后端监听端口 | `14000` |
-| `FRONTEND_PORT` | 前端监听端口 | `5173` |
-| `API_BASE_URL` | 前端访问的后端地址 | `http://127.0.0.1:<BACKEND_PORT>` |
-
-日志保存在 `/tmp/backend_run.log`、`/tmp/frontend_run.log`，依赖安装日志存于 `/tmp/backend_pip_install.log` 与 `/tmp/frontend_npm_install.log`。
-
-## 后端部署
 ```bash
-cd backend
-cp .env.example .env          # 如需自定义端口或默认币种
-npm install
-npm run dev                   # 开发模式（使用 ts-node + nodemon）
-# 或
-npm run build && npm start    # 生产构建并运行
+BACKEND_PORT=15000 FRONTEND_PORT=16000 ./start.sh
 ```
 
-主要环境变量（`.env`）：
-- `PORT`：API 服务端口，默认 `14000`
-- `DEFAULT_COINS`：默认追踪的币种 ID 列表（逗号分隔）
-- `DEFAULT_VS_CURRENCY`：默认计价货币，默认 `usd`
-- `CACHE_TTL_SECONDS`：CoinGecko 响应的缓存时间
-- `MAX_COINS_PER_REQUEST`：单次请求最大币种数量
-- `POLICY_NEWS_ENDPOINT`（可选）：自定义金融政策资讯数据源，默认使用 CryptoCompare Regulation 新闻接口
-- `DATABASE_PATH`：订阅用户信息的 SQLite 存储路径（默认 `./data/app.sqlite3`）
-- `EMAIL_ENABLED`：是否启用邮件推送功能（`true/false`）
-- `SMTP_HOST`/`SMTP_PORT`/`SMTP_USERNAME`/`SMTP_PASSWORD`/`SMTP_FROM_EMAIL`：邮件推送所需的 SMTP 配置
-- `ADMIN_PASSWORD`：后台管理登录密码
-- `ADMIN_JWT_SECRET`：后台签发 JWT 的密钥
+### 手动启动
 
-### API Endpoints
-| 方法 | 路径 | 描述 |
-| ---- | ---- | ---- |
-| GET | `/healthz` | 健康检查 |
-| GET | `/api/coins` | 带健康指标的币种列表，可指定 `ids`、`vs_currency` |
-| GET | `/api/coins/:id/history` | 指定币种历史数据，支持 `timeframe`（1D/7D/30D/90D/1Y）和 `vs_currency` |
-| GET | `/api/market/overview` | 市场总览：总市值、成交量、占比、热门搜索 |
-| GET | `/api/news/policies` | 金融/监管政策资讯（默认接入 CryptoCompare Regulation 新闻，可自定义数据源） |
-| GET | `/api/macro/nfp` | 美国非农就业数据（示例数据，支持替换为真实来源） |
-| POST | `/api/users/subscriptions` | 新增/更新邮箱订阅（参数：`email`、`coins` 数组） |
-| GET | `/api/users/subscriptions/{email}` | 查询指定邮箱的订阅信息 |
-| POST | `/api/admin/login` | 管理员登录，参数 `password`，返回 Bearer Token |
-| GET/PUT | `/api/admin/config` | 获取/更新邮件推送等配置（需 Bearer Token） |
-| GET | `/api/admin/subscribers` | 查看所有订阅邮箱（需 Bearer Token） |
+1. **后端**
 
-## 前端部署
-```bash
-cd frontend
-cp .env.example .env          # 设置后端 API 地址，默认为 http://localhost:14000
-npm install
-npm run dev                   # 启动本地开发（默认 5173 端口）
-# 或
-npm run build && npm run preview
-```
-
-前端 `.env` 变量：
-- `VITE_API_BASE_URL`：后端地址，开发模式通常为 `http://localhost:14000`
-
-## 可视化面板
-- **Overview**：展示全球市值、总成交量、平均健康度及领先币种。
-- **Price & Volume**：支持 1 天至 1 年的价格/成交量联动趋势图。
-- **Health Radar**：单个币种的多维健康指标雷达图。
-- **Metric Comparison**：多个币种的健康、流动性、动量、波动性柱状对比。
-- **Dominance & Trending**：市占率饼图与 CoinGecko 热门币种列表。
-- **Tracked Assets Table**：主表格包含价格、24h 涨跌、成交量、健康进度条和 7 日迷你图，可点击切换关注对象。
-
-## 后续可拓展方向
-1. **WebSocket 或 SSE** 实现秒级推送，减少轮询开销。
-2. **用户偏好与自定义分组**，支持本地存储或账号体系。
-3. **更多数据源**（链上数据、期权隐含波动率等）丰富健康模型。
-4. **部署脚本**：提供 Dockerfile 与 CI 工作流，快捷部署到云端。
-
-欢迎根据业务需求进行二次开发，或将健康评分模型与自有策略结合使用。
-
-## 页面预览
-
-| 首页仪表盘 | 核心币种概览 |
-| --- | --- |
-| ![Dashboard Header](docs/images/dashboard-header.svg) | ![Coin Cards](docs/images/dashboard-coins.svg) |
-
-| 市场洞察 | 美国非农就业数据 |
-| --- | --- |
-| ![Market Insights](docs/images/dashboard-insights.svg) | ![US NFP](docs/images/dashboard-nfp.svg) |
-
-## 邮件订阅与推送
-
-1. 在 `backend/.env` 中配置 SMTP 相关变量，并将 `EMAIL_ENABLED` 设置为 `true`。
-2. 调用订阅接口（示例）：
    ```bash
-   curl -X POST http://127.0.0.1:14000/api/users/subscriptions \
-     -H "Content-Type: application/json" \
-     -d '{"email": "user@example.com", "coins": ["bitcoin", "ethereum"]}'
+   cd backend
+   python3 -m venv .venv
+   source .venv/bin/activate
+   pip install -r requirements.txt
+   export PORT=14000  # 可选
+   python run.py
    ```
-3. 运行 `python send_notifications.py`（位于 `backend/` 目录）即可向所有订阅者发送当日摘要，可结合系统 `cron` 定时执行。
 
-## 后台管理页面
+   Flask 应用会监听 `http://127.0.0.1:${PORT}`。可通过 `python send_notifications.py` 手动预览邮件摘要输出。
 
-1. 在 `.env` 中配置 `ADMIN_PASSWORD` 与 `ADMIN_JWT_SECRET`。
-2. 访问前端 `http://127.0.0.1:15173/admin`，输入管理员密码登录。
-3. 登录成功后可在线修改 SMTP 配置、开启/关闭邮件推送、查看订阅用户列表。
-4. 所有请求均通过受保护的后台 API 下发或写入 SQLite，确保配置实时生效。
-5. 后台右上角可点击“立即发送”手动触发一次邮件推送，便于测试。
+2. **前端**
 
-> 默认证书：如未修改 `.env`，可使用 `admin123` 登录后台。
+   ```bash
+   cd frontend
+   npm install
+   npm run dev
+   ```
 
-## 预取行情数据（缓存）
+   默认访问 `http://127.0.0.1:15173`，并通过 `VITE_API_BASE_URL` 与后端交互。
 
-为了避免 CoinGecko 429 限流、提升前端访问速度，可以定期运行批量预取脚本，将行情数据写入 SQLite 缓存：
+## 部署指南
 
-```bash
-cd backend
-source .venv/bin/activate              # 如尚未激活虚拟环境
-python prefetch_data.py --coins bitcoin,ethereum,solana --timeframes 1D,7D,30D --sleep 2
-```
+部署分为后端 API、定时任务与前端静态资源三部分，可独立或组合部署。
 
-脚本会按配置的间隔（默认 2 秒）调用 API，遵守每分钟 30 次的限制。缓存有效期默认为 7 天（可通过 `API_CACHE_MAX_AGE_SECONDS` 调整）。前端和邮件推送都会优先读取缓存，即使外部接口暂时限流也能正常展示数据。建议通过系统 `cron` 或任务调度器定时执行该脚本。
+### 后端（Flask + Gunicorn）
+
+1. 安装依赖并构建虚拟环境：
+
+   ```bash
+   cd backend
+   python3 -m venv .venv
+   source .venv/bin/activate
+   pip install -r requirements.txt
+   ```
+
+2. 设置环境变量（可通过 `.env`）：
+
+   | 变量 | 说明 | 默认值 |
+   | --- | --- | --- |
+   | `PORT` | Flask 监听端口 | 14000 |
+   | `DEFAULT_COINS` | 允许订阅的币种列表（逗号分隔，client 也依赖该值） | `bitcoin,ethereum,...` |
+   | `DEFAULT_VS_CURRENCY` | 默认报价货币 | `usd` |
+   | `REQUEST_TIMEOUT_SECONDS` | 数据源请求超时 | `12` |
+   | `COINGECKO_BASE_URL` | CoinGecko API 地址 | `https://api.coingecko.com/api/v3` |
+   | `POLICY_NEWS_ENDPOINT` | 政策新闻数据源 | `https://min-api.cryptocompare.com/data/v2/news/` |
+   | `POLICY_NEWS_CATEGORIES` | 新闻分类过滤 | `Regulation,General,Market,Energy,Forex` |
+   | `POLICY_NEWS_CACHE_TTL` | 新闻缓存时间（秒） | `300` |
+   | `POLICY_NEWS_MAX_ITEMS` | 最多保留的新闻条数 | `24` |
+   | `EMAIL_ENABLED` | 是否启用邮件推送 | `false` |
+   | `SMTP_HOST` / `SMTP_PORT` / `SMTP_USERNAME` / `SMTP_PASSWORD` / `SMTP_FROM_EMAIL` | SMTP 配置 | — |
+   | `ADMIN_PASSWORD` | 后台登录密码 | `admin123` |
+   | `ADMIN_JWT_SECRET` | 后台 JWT 密钥 | `crypto-health-intel-secret` |
+
+3. 使用 Gunicorn（或其他 WSGI 服务器）部署：
+
+   ```bash
+   gunicorn --bind 0.0.0.0:${PORT:-14000} "app:create_app()"
+   ```
+
+   > `app:create_app` 在 `backend/app/__init__.py` 中定义。
+
+4. 若需要 HTTPS 或反向代理，可在前面添加 Nginx/Traefik，并将 `VITE_API_BASE_URL` 指向外网地址。
+
+### 邮件推送任务
+
+`backend/send_notifications.py` 可直接运行，读取配置并发送订阅摘要。部署时建议：
+
+- 在同一虚拟环境中执行：`python send_notifications.py`
+- 结合 cron / systemd timer / Celery Beat 等调度机制，例如：
+
+  ```cron
+  0 8 * * * /path/to/backend/.venv/bin/python /path/to/backend/send_notifications.py >> /var/log/crypto-digest.log 2>&1
+  ```
+
+脚本会输出发送结果（成功/失败邮箱列表）以便排查。
+
+### 前端（Vite 构建）
+
+1. 安装依赖并构建：
+
+   ```bash
+   cd frontend
+   npm install
+   npm run build
+   ```
+
+2. 输出内容位于 `frontend/dist`，可使用 Nginx/Netlify/Vercel 等任意静态托管。
+
+3. 部署时需要设置 `VITE_API_BASE_URL` 指向后端公网地址：
+
+   ```bash
+   VITE_API_BASE_URL=https://api.example.com npm run build
+   ```
+
+4. 若使用容器部署，可将 `dist` 目录复制至静态站点镜像，或使用多阶段 Dockerfile（自行扩展）。
+
+### 参考 Docker 化思路（可选）
+
+项目暂未包含 Dockerfile，可按以下思路自行扩展：
+
+- **后端镜像**：基于 `python:3.11-slim`，复制 `backend/`，安装 requirements，设置 Gunicorn Entrypoint。
+- **前端镜像**：基于 `node:20-alpine` 构建，再复制至 `nginx:alpine` 作为静态资源。
+- 使用 `docker-compose` 或 K8s 编排时，确保服务间通过环境变量共享 API 地址。
+
+## 常用 API
+
+| 方法 | 路径 | 功能 |
+| --- | --- | --- |
+| `GET /api/coins` | 获取选定币种的实时指标 |
+| `GET /api/coins/<id>/history` | 指定币种的历史价格（支持 `timeframe`） |
+| `GET /api/market/overview` | 市场概况、趋势热搜、占比等 |
+| `GET /api/news/policies` | 按主题聚合后的政策新闻 |
+| `GET /api/macro/nfp` | 美国非农就业指标时间序列 |
+| `POST /api/users/subscriptions` | 创建/更新订阅（邮箱 + 币种数组） |
+| `POST /api/admin/login` | 管理员登录，返回 JWT |
+| `GET /api/admin/config` | 获取 SMTP/邮件配置（需要 Bearer Token） |
+| `PUT /api/admin/config` | 更新配置 |
+| `GET /api/admin/subscribers` | 订阅用户列表 |
+| `POST /api/admin/notifications/send` | 手动触发邮件推送 |
+
+## 邮件内容结构
+
+- 订阅者问候语与提醒
+- 每个订阅币种的：
+  - 实时价格与 24h 涨跌
+  - 综合健康分、流动性、动量分
+  - 预测变化（如可计算）
+- **政策热点摘要**：
+  - “全球动荡观察”“世界局势脉络”“能源市场焦点”“市场稳定度速览”“政策动向追踪”“政策观察”等分区
+  - 每条包含地区、标题、主题标签、摘要与原文链接
+- 自动生成的结束语
+
+## 贡献指南
+
+1. Fork & Clone 项目
+2. 创建虚拟环境和前端依赖
+3. 提交前请运行必要的格式化 / lint（`npm run lint`）
+4. 通过 Pull Request 提交，建议附带变更说明与截图（若涉及 UI）
+
+## 数据来源
+
+- [CoinGecko API](https://www.coingecko.com/en/api) — 市场数据与健康指标
+  - 建议在部署前申请 API Key 并根据限制设置缓存
+- [CryptoCompare News API](https://min-api.cryptocompare.com/) — 政策与市场新闻
+- 美国劳工部公开数据 — NFP 指标（已通过服务封装）
+
+## 许可证
+
+本项目采用 [MIT License](./LICENSE)。
